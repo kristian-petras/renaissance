@@ -3,7 +3,7 @@ package org.renaissance.common.utility
 import org.renaissance.BenchmarkContext
 import org.renaissance.common.model.WorkloadConfiguration
 
-object Utility {
+internal object Utility {
     fun BenchmarkContext.toWorkloadConfiguration(): WorkloadConfiguration = WorkloadConfiguration(
         host = parameter("host").value(),
         port = parameter("port").value().toInt(),
@@ -13,6 +13,8 @@ object Utility {
         mixedWorkloadRepeatCount = parameter("mixed_workload_repeat_count").value().toInt(),
         workloadCount = parameter("workload_count").value().toInt(),
         maxThreads = parameter("max_threads").value().toInt(),
-        workloadSelectorSeed = parameter("workload_selector_seed").value().toLong()
+        workloadSelectorSeed = parameter("workload_selector_seed").value().toLong(),
+        clientFramework = parameter("client_framework").value(),
+        serverFramework = parameter("server_framework").value()
     )
 }

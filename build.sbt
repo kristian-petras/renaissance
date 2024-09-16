@@ -362,6 +362,10 @@ lazy val http4kBenchmarks = (project in file("benchmarks/http4k"))
     kotlinVersion := "2.0.0",
     kotlincJvmTarget := "1.8",
     libraryDependencies ++= Seq(
+      "io.ktor" % "ktor-server-core-jvm" % "2.3.12",
+      "io.ktor" % "ktor-server-netty-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-core-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-okhttp-jvm" % "2.3.12",
       "org.http4k" % "http4k-core" % "5.29.0.0",
       "org.http4k" % "http4k-server-undertow" % "5.29.0.0",
       "org.http4k" % "http4k-client-okhttp" % "5.29.0.0",

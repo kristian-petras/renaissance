@@ -1,13 +1,10 @@
-package org.renaissance.http4k.workload
+package org.renaissance.common.workload
 
 import kotlinx.coroutines.*
-import org.http4k.core.HttpHandler
-import org.http4k.core.Method
-import org.http4k.core.Request
+import org.renaissance.common.model.Product
 import org.renaissance.common.model.WorkloadConfiguration
 import org.renaissance.common.model.WorkloadSummary
 import org.renaissance.common.model.WorkloadType
-import org.renaissance.http4k.model.Product
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
@@ -18,8 +15,9 @@ import kotlin.random.Random
  * @param client HttpHandler used to send requests to the server.
  * @param configuration WorkloadConfiguration used to generate the workload.
  */
-internal class WorkloadClient(
-    private val client: HttpHandler, private val configuration: WorkloadConfiguration
+internal class WorkloadGenerator(
+    private val client: WorkloadClient,
+    private val configuration: WorkloadConfiguration
 ) {
     private val getProductsCounter = AtomicLong(0)
     private val getProductCounter = AtomicLong(0)
@@ -42,7 +40,7 @@ internal class WorkloadClient(
      * Random workload is generated for each iteration based on the seed in [WorkloadConfiguration.workloadSelectorSeed].
      * @return WorkloadResult containing number of requests per type used for validation.
      */
-    suspend fun workload(): WorkloadSummary = coroutineScope {
+    suspend fun runWorkload(): WorkloadSummary = coroutineScope {
         val random = Random(configuration.workloadSelectorSeed)
         withContext(dispatcher) {
             range(configuration.workloadCount).flatMap {
@@ -70,10 +68,11 @@ internal class WorkloadClient(
     /**
      * Read workload gets all products and then iterates over each one and gets the specific product.
      */
-    private fun HttpHandler.readWorkload() {
+    private suspend fun WorkloadClient.readWorkload() {
         val products = getProducts()
         products.forEach { product ->
             getProduct(product.id)
+            getProductCounter.incrementAndGet()
         }
         readCounter.incrementAndGet()
     }
@@ -81,54 +80,40 @@ internal class WorkloadClient(
     /**
      * Write workload creates a new product.
      */
-    private fun HttpHandler.writeWorkload() {
+    private suspend fun WorkloadClient.writeWorkload() {
         val product = generateProduct()
         postProduct(product)
+
+        postProductCounter.incrementAndGet()
         writeCounter.incrementAndGet()
     }
 
     /**
      * DDOS workload reads all products 10 times in a row.
      */
-    private fun HttpHandler.ddosWorkload() {
+    private suspend fun WorkloadClient.ddosWorkload() {
         repeat(10) {
             getProducts()
         }
+
+        getProductsCounter.addAndGet(10)
         ddosCounter.incrementAndGet()
     }
 
     /**
      * Mixed workload reads all products, then creates a new product and fetches it afterward.
      */
-    private fun HttpHandler.mixedWorkload() {
+    private suspend fun WorkloadClient.mixedWorkload() {
         getProducts()
         val product = generateProduct()
         postProduct(product)
         getProduct(product.id)
+
+        getProductsCounter.incrementAndGet()
+        postProductCounter.incrementAndGet()
+        getProductCounter.incrementAndGet()
         mixedCounter.incrementAndGet()
     }
-
-    /**
-     * Helper functions to interact with the server.
-     */
-    private fun HttpHandler.getProducts(): List<Product> =
-        Product.productsLens(this(Request(Method.GET, configuration.url("product")))).toList()
-            .also { getProductsCounter.incrementAndGet() }
-
-    private fun HttpHandler.getProduct(id: String) =
-        this(Request(Method.GET, configuration.url("product/$id"))).also { getProductCounter.incrementAndGet() }
-
-    private fun HttpHandler.postProduct(product: Product) = this(
-        Product.productLens(
-            product,
-            Request(Method.POST, configuration.url("product"))
-        )
-    ).also { postProductCounter.incrementAndGet() }
-
-    /**
-     * Helper function to generate a URL from the configuration.
-     */
-    private fun WorkloadConfiguration.url(endpoint: String) = "http://$host:$port/$endpoint"
 
     /**
      * Helper function to generate a random workload type.

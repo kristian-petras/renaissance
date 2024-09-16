@@ -1,6 +1,6 @@
 package org.renaissance.common.model
 
-data class WorkloadConfiguration(
+internal data class WorkloadConfiguration(
     val host: String,
     val port: Int,
     val readWorkloadRepeatCount: Int,
@@ -10,4 +10,6 @@ data class WorkloadConfiguration(
     val workloadCount: Int,
     val maxThreads: Int,
     val workloadSelectorSeed: Long,
+    val clientFramework: String,
+    val serverFramework: String
 )

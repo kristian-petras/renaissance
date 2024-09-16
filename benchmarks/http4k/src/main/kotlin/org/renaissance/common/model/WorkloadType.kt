@@ -1,4 +1,4 @@
-package org.renaissance.http4k.workload
+package org.renaissance.common.model
 
 internal enum class WorkloadType {
     READ,

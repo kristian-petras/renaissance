@@ -9,7 +9,8 @@ import org.renaissance.BenchmarkResult
 import org.renaissance.BenchmarkResult.Validators
 import org.renaissance.License
 import org.renaissance.http4k.workload.WorkloadClient
-import org.renaissance.http4k.workload.WorkloadConfiguration
+import org.renaissance.common.model.WorkloadConfiguration
+import org.renaissance.common.utility.Utility.toWorkloadConfiguration
 import org.renaissance.http4k.workload.WorkloadServer
 
 @Name("http4k")
@@ -86,18 +87,6 @@ class Http4kBenchmark : Benchmark {
     override fun tearDownAfterEach(context: BenchmarkContext) {
         server.stop()
     }
-
-    private fun BenchmarkContext.toWorkloadConfiguration(): WorkloadConfiguration = WorkloadConfiguration(
-        host = parameter("host").value(),
-        port = parameter("port").value().toInt(),
-        readWorkloadRepeatCount = parameter("read_workload_repeat_count").value().toInt(),
-        writeWorkloadRepeatCount = parameter("write_workload_repeat_count").value().toInt(),
-        ddosWorkloadRepeatCount = parameter("ddos_workload_repeat_count").value().toInt(),
-        mixedWorkloadRepeatCount = parameter("mixed_workload_repeat_count").value().toInt(),
-        workloadCount = parameter("workload_count").value().toInt(),
-        maxThreads = parameter("max_threads").value().toInt().also { println("hoggigi $it") },
-        workloadSelectorSeed = parameter("workload_selector_seed").value().toLong()
-    )
 
     private fun WorkloadConfiguration.toWorkloadClient(): WorkloadClient =
         WorkloadClient(OkHttp(), this)

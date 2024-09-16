@@ -1,6 +1,6 @@
-package org.renaissance.http4k.workload
+package org.renaissance.common.model
 
-internal data class WorkloadConfiguration(
+data class WorkloadConfiguration(
     val host: String,
     val port: Int,
     val readWorkloadRepeatCount: Int,

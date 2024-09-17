@@ -1,11 +1,10 @@
-package org.renaissance.common
+package org.renaissance
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.client.engine.okhttp.OkHttp as KtorOKHttp
 import kotlinx.coroutines.runBlocking
-import org.renaissance.Benchmark
 import org.http4k.client.OkHttp as Http4kOkHttp
 import org.renaissance.BenchmarkResult.Validators
 import org.renaissance.common.model.WorkloadConfiguration
@@ -20,9 +19,6 @@ import org.renaissance.Benchmark.Name
 import org.renaissance.Benchmark.Parameter
 import org.renaissance.Benchmark.Repetitions
 import org.renaissance.Benchmark.Summary
-import org.renaissance.BenchmarkContext
-import org.renaissance.BenchmarkResult
-import org.renaissance.License
 import org.renaissance.common.workload.WorkloadClient
 import org.renaissance.common.workload.WorkloadGenerator
 import org.renaissance.common.workload.WorkloadServer

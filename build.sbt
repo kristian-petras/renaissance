@@ -354,10 +354,10 @@ lazy val jdkStreamsBenchmarks = (project in file("benchmarks/jdk-streams"))
   )
   .dependsOn(renaissanceCore % "provided")
 
-lazy val http4kBenchmarks = (project in file("benchmarks/http4k"))
+lazy val kotlinWebBenchmarks = (project in file("benchmarks/kotlin-web"))
   .enablePlugins(KotlinPlugin)
   .settings(
-    name := "http4k",
+    name := "kotlin-web",
     commonSettingsNoScala,
     kotlinVersion := "2.0.20",
     kotlincJvmTarget := "1.8",
@@ -541,7 +541,7 @@ val renaissanceBenchmarks: Seq[Project] = Seq(
   databaseBenchmarks,
   jdkConcurrentBenchmarks,
   jdkStreamsBenchmarks,
-  http4kBenchmarks,
+  kotlinWebBenchmarks,
   neo4jBenchmarks,
   rxBenchmarks,
   scalaDottyBenchmarks,

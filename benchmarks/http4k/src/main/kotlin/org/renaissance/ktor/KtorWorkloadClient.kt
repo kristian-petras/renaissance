@@ -5,6 +5,8 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import org.renaissance.common.workload.WorkloadClient
 import org.renaissance.common.model.Product
 
@@ -23,6 +25,7 @@ internal class KtorWorkloadClient(
 
     override suspend fun postProduct(product: Product) {
         client.post(url("product")) {
+            contentType(ContentType.Application.Json)
             setBody(product)
         }
     }

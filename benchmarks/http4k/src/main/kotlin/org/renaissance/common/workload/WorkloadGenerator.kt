@@ -7,7 +7,6 @@ import org.renaissance.common.model.WorkloadSummary
 import org.renaissance.common.model.WorkloadType
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.random.Random
 
 /**
  * Client used to generate workloads for the http4k server.

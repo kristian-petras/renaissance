@@ -1,19 +1,15 @@
 package org.renaissance.common
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.client.engine.okhttp.OkHttp as KtorOKHttp
 import kotlinx.coroutines.runBlocking
-import org.http4k.client.OkHttp as Http4kOkHttp
 import org.renaissance.Benchmark
-import org.renaissance.BenchmarkContext
-import org.renaissance.BenchmarkResult
+import org.http4k.client.OkHttp as Http4kOkHttp
 import org.renaissance.BenchmarkResult.Validators
-import org.renaissance.License
 import org.renaissance.common.model.WorkloadConfiguration
 import org.renaissance.common.utility.Utility.toWorkloadConfiguration
-import org.renaissance.common.workload.WorkloadClient
-import org.renaissance.common.workload.WorkloadGenerator
-import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.http4k.Http4kWorkloadClient
 import org.renaissance.http4k.Http4kWorkloadServer
 import org.renaissance.ktor.KtorWorkloadClient
@@ -24,11 +20,17 @@ import org.renaissance.Benchmark.Name
 import org.renaissance.Benchmark.Parameter
 import org.renaissance.Benchmark.Repetitions
 import org.renaissance.Benchmark.Summary
+import org.renaissance.BenchmarkContext
+import org.renaissance.BenchmarkResult
+import org.renaissance.License
+import org.renaissance.common.workload.WorkloadClient
+import org.renaissance.common.workload.WorkloadGenerator
+import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.ktor.KtorWorkloadServer
 
-@Name("http4k")
+@Name("kotlin-web")
 @Group("kotlin")
-@Summary("Runs the http4k server and tests the throughput of the server by sending requests to the server.")
+@Summary("Runs the web server and tests the throughput of the server by sending requests to the server.")
 @Licenses(License.APACHE2)
 @Repetitions(20)
 @Parameter(
@@ -117,7 +119,7 @@ internal class WorkloadBenchmark : Benchmark {
 
     private fun WorkloadConfiguration.toWorkloadClient(): WorkloadClient = when (clientFramework) {
         "http4k" -> Http4kWorkloadClient(Http4kOkHttp(), host, port)
-        "ktor" -> KtorWorkloadClient(HttpClient(KtorOKHttp), host, port)
+        "ktor" -> KtorWorkloadClient(HttpClient(KtorOKHttp) { install(ContentNegotiation) { json() } }, host, port)
         else -> throw IllegalArgumentException("Unsupported client framework: $clientFramework")
     }
 

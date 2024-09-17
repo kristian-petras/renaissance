@@ -1,4 +1,4 @@
-import kotlin.Keys.{kotlinVersion, kotlincJvmTarget}
+import kotlin.Keys.{kotlinPlugin, kotlinVersion, kotlincJvmTarget}
 import org.renaissance.License
 import sbt.Def
 import sbt.Package
@@ -359,18 +359,24 @@ lazy val http4kBenchmarks = (project in file("benchmarks/http4k"))
   .settings(
     name := "http4k",
     commonSettingsNoScala,
-    kotlinVersion := "2.0.0",
+    kotlinVersion := "2.0.20",
     kotlincJvmTarget := "1.8",
+    kotlinPlugin("serialization-compiler-plugin-embeddable"),
     libraryDependencies ++= Seq(
       "io.ktor" % "ktor-server-core-jvm" % "2.3.12",
       "io.ktor" % "ktor-server-netty-jvm" % "2.3.12",
+      "io.ktor" % "ktor-server-content-negotiation-jvm" % "2.3.12",
       "io.ktor" % "ktor-client-core-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-content-negotiation-jvm" % "2.3.12",
       "io.ktor" % "ktor-client-okhttp-jvm" % "2.3.12",
+      "io.ktor" % "ktor-serialization-kotlinx-json-jvm" % "2.3.12",
       "org.http4k" % "http4k-core" % "5.29.0.0",
       "org.http4k" % "http4k-server-undertow" % "5.29.0.0",
       "org.http4k" % "http4k-client-okhttp" % "5.29.0.0",
       "org.http4k" % "http4k-format-moshi" % "5.29.0.0",
-      "org.jetbrains.kotlinx" % "kotlinx-coroutines-core" % "1.9.0"
+      "ch.qos.logback" % "logback-classic" % "1.5.8",
+      "org.jetbrains.kotlinx" % "kotlinx-coroutines-core" % "1.9.0",
+      "org.jetbrains.kotlinx" % "kotlinx-serialization-json-jvm" % "1.7.2",
     )
   )
   .dependsOn(renaissanceCore % "provided")

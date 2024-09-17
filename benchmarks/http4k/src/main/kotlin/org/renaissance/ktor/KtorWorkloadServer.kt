@@ -1,14 +1,18 @@
 package org.renaissance.ktor
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.call
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.runBlocking
 import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.common.model.Product
 import java.util.concurrent.ConcurrentHashMap
@@ -16,6 +20,9 @@ import java.util.concurrent.ConcurrentHashMap
 class KtorWorkloadServer(port: Int) : WorkloadServer {
     private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>()
     private val server = embeddedServer(Netty, port = port) {
+        install(ContentNegotiation) {
+            json()
+        }
         routing {
             get("/product") {
                 call.respond(HttpStatusCode.OK, products.values)
@@ -38,7 +45,7 @@ class KtorWorkloadServer(port: Int) : WorkloadServer {
         }
     }
 
-    override fun port(): Int = server.environment.connectors.first().port
+    override fun port(): Int = runBlocking { server.resolvedConnectors().first().port }
 
     override fun start() {
         server.start(wait = false)

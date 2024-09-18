@@ -70,7 +70,7 @@ import org.renaissance.ktor.KtorWorkloadServer
     summary = "Maximum number of threads to use for the executor of the requests."
 )
 @Parameter(
-    name = "workload_selector_seed",
+    name = "workload_selection_seed",
     defaultValue = "42",
     summary = "Seed used to generate random workloads."
 )

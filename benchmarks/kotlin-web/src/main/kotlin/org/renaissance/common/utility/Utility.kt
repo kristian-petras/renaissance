@@ -13,7 +13,7 @@ internal object Utility {
         mixedWorkloadRepeatCount = parameter("mixed_workload_repeat_count").value().toInt(),
         workloadCount = parameter("workload_count").value().toInt(),
         maxThreads = parameter("max_threads").value().toInt(),
-        workloadSelectorSeed = parameter("workload_selector_seed").value().toLong(),
+        workloadSelectionSeed = parameter("workload_selection_seed").value().toLong(),
         clientFramework = parameter("client_framework").value(),
         serverFramework = parameter("server_framework").value()
     )

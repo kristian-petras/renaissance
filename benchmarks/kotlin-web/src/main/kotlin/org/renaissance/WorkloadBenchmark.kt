@@ -3,15 +3,7 @@ package org.renaissance
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.client.engine.okhttp.OkHttp as KtorOKHttp
 import kotlinx.coroutines.runBlocking
-import org.http4k.client.OkHttp as Http4kOkHttp
-import org.renaissance.BenchmarkResult.Validators
-import org.renaissance.common.model.WorkloadConfiguration
-import org.renaissance.common.utility.Utility.toWorkloadConfiguration
-import org.renaissance.http4k.Http4kWorkloadClient
-import org.renaissance.http4k.Http4kWorkloadServer
-import org.renaissance.ktor.KtorWorkloadClient
 import org.renaissance.Benchmark.Configuration
 import org.renaissance.Benchmark.Group
 import org.renaissance.Benchmark.Licenses
@@ -19,10 +11,17 @@ import org.renaissance.Benchmark.Name
 import org.renaissance.Benchmark.Parameter
 import org.renaissance.Benchmark.Repetitions
 import org.renaissance.Benchmark.Summary
+import org.renaissance.BenchmarkResult.Validators
+import org.renaissance.common.model.WorkloadConfiguration
+import org.renaissance.common.utility.Utility.toWorkloadConfiguration
 import org.renaissance.common.workload.WorkloadClient
 import org.renaissance.common.workload.WorkloadGenerator
 import org.renaissance.common.workload.WorkloadServer
+import org.renaissance.http4k.Http4kWorkloadClient
+import org.renaissance.http4k.Http4kWorkloadServer
+import org.renaissance.ktor.KtorWorkloadClient
 import org.renaissance.ktor.KtorWorkloadServer
+import io.ktor.client.engine.okhttp.OkHttp as KtorOKHttp
 
 @Name("kotlin-web")
 @Group("kotlin")
@@ -80,9 +79,23 @@ import org.renaissance.ktor.KtorWorkloadServer
     summary = "Framework used to send requests to the server. Supported frameworks are 'http4k' and 'ktor'."
 )
 @Parameter(
+    name = "client_engine",
+    defaultValue = "apache",
+    summary = "Client engine used to send requests to the server.\n" +
+            "Supported engines for http4k are 'apache', 'jetty', 'okhttp' and 'helidon'.\n" +
+            "Supported engines for ktor are 'apache', 'jetty', 'okhttp' and 'cio'."
+)
+@Parameter(
     name = "server_framework",
     defaultValue = "http4k",
     summary = "Framework used to process requests. Supported frameworks are 'http4k' and 'ktor'."
+)
+@Parameter(
+    name = "server_engine",
+    defaultValue = "jetty",
+    summary = "Server engine used to process requests.\n" +
+            "Supported engines for http4k are 'apache', 'jetty', 'undertow' and 'helidon'.\n" +
+            "Supported engines for ktor are 'apache', 'jetty', 'tomcat' and 'cio'."
 )
 @Configuration(name = "jmh")
 internal class WorkloadBenchmark : Benchmark {
@@ -114,13 +127,13 @@ internal class WorkloadBenchmark : Benchmark {
     }
 
     private fun WorkloadConfiguration.toWorkloadClient(): WorkloadClient = when (clientFramework) {
-        "http4k" -> Http4kWorkloadClient(Http4kOkHttp(), host, port)
+        "http4k" -> Http4kWorkloadClient.create(this)
         "ktor" -> KtorWorkloadClient(HttpClient(KtorOKHttp) { install(ContentNegotiation) { json() } }, host, port)
         else -> throw IllegalArgumentException("Unsupported client framework: $clientFramework")
     }
 
     private fun WorkloadConfiguration.toWorkloadServer(): WorkloadServer = when (serverFramework) {
-        "http4k" -> Http4kWorkloadServer(port)
+        "http4k" -> Http4kWorkloadServer.create(this)
         "ktor" -> KtorWorkloadServer(port)
         else -> throw IllegalArgumentException("Unsupported server framework: $serverFramework")
     }

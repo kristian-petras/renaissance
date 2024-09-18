@@ -7,16 +7,21 @@ import org.http4k.core.Status
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
+import org.http4k.server.ApacheServer
+import org.http4k.server.Helidon
+import org.http4k.server.Jetty
+import org.http4k.server.ServerConfig
 import org.http4k.server.Undertow
 import org.http4k.server.asServer
 import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.common.model.Product
+import org.renaissance.common.model.WorkloadConfiguration
 import org.renaissance.http4k.Lens.productLens
 import org.renaissance.http4k.Lens.productsLens
 import java.util.concurrent.ConcurrentHashMap
 
-internal class Http4kWorkloadServer(port: Int) : WorkloadServer {
-    private val server = app().asServer(Undertow(port))
+internal class Http4kWorkloadServer(serverEngine: ServerConfig) : WorkloadServer {
+    private val server = app().asServer(serverEngine)
     private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>()
 
     private fun app(): HttpHandler = routes(
@@ -47,5 +52,21 @@ internal class Http4kWorkloadServer(port: Int) : WorkloadServer {
     override fun stop() {
         server.stop()
         products.clear()
+    }
+
+    companion object {
+        fun create(config: WorkloadConfiguration): Http4kWorkloadServer {
+            val server = when (config.serverEngine) {
+                "apache" -> ApacheServer(config.port)
+                "jetty" -> Jetty(config.port)
+                "undertow" -> Undertow(config.port)
+                "helidon" -> Helidon(config.port)
+                else -> error(
+                    "Unsupported server engine: ${config.serverEngine}. " +
+                            "Supported engines are: apache, jetty, undertow, helidon."
+                )
+            }
+            return Http4kWorkloadServer(server)
+        }
     }
 }

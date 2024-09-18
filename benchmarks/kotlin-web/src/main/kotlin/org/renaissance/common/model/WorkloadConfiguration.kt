@@ -11,5 +11,7 @@ internal data class WorkloadConfiguration(
     val maxThreads: Int,
     val workloadSelectionSeed: Long,
     val clientFramework: String,
-    val serverFramework: String
+    val clientEngine: String,
+    val serverFramework: String,
+    val serverEngine: String
 )

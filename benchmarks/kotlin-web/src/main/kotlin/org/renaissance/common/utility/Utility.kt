@@ -15,6 +15,8 @@ internal object Utility {
         maxThreads = parameter("max_threads").value().toInt(),
         workloadSelectionSeed = parameter("workload_selection_seed").value().toLong(),
         clientFramework = parameter("client_framework").value(),
-        serverFramework = parameter("server_framework").value()
+        clientEngine = parameter("client_engine").value(),
+        serverFramework = parameter("server_framework").value(),
+        serverEngine = parameter("server_engine").value()
     )
 }

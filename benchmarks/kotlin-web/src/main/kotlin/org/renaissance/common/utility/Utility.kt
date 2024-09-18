@@ -1,7 +1,9 @@
 package org.renaissance.common.utility
 
 import org.renaissance.BenchmarkContext
+import org.renaissance.common.model.Product
 import org.renaissance.common.model.WorkloadConfiguration
+import java.util.UUID
 
 internal object Utility {
     fun BenchmarkContext.toWorkloadConfiguration(): WorkloadConfiguration = WorkloadConfiguration(
@@ -17,6 +19,16 @@ internal object Utility {
         clientFramework = parameter("client_framework").value(),
         clientEngine = parameter("client_engine").value(),
         serverFramework = parameter("server_framework").value(),
-        serverEngine = parameter("server_engine").value()
+        serverEngine = parameter("server_engine").value(),
+        initialProductCount = parameter("initial_product_count").value().toInt()
     )
+
+    /**
+     * Helper function to generate a new product with random id.
+     */
+    fun generateProduct(): Product {
+        val id = UUID.randomUUID().toString()
+        val name = "Product $id"
+        return Product(id, name)
+    }
 }

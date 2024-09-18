@@ -16,13 +16,19 @@ import org.http4k.server.asServer
 import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.common.model.Product
 import org.renaissance.common.model.WorkloadConfiguration
+import org.renaissance.common.utility.Utility.generateProduct
 import org.renaissance.http4k.Lens.productLens
 import org.renaissance.http4k.Lens.productsLens
 import java.util.concurrent.ConcurrentHashMap
 
-internal class Http4kWorkloadServer(serverEngine: ServerConfig) : WorkloadServer {
+internal class Http4kWorkloadServer(serverEngine: ServerConfig, initialProductCount: Int) : WorkloadServer {
     private val server = app().asServer(serverEngine)
-    private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>()
+    private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>().apply {
+        repeat(initialProductCount) {
+            val product = generateProduct()
+            put(product.id, product)
+        }
+    }
 
     private fun app(): HttpHandler = routes(
         "/product" bind Method.GET to { productsLens(products.values.toTypedArray(), Response(Status.OK)) },
@@ -66,7 +72,7 @@ internal class Http4kWorkloadServer(serverEngine: ServerConfig) : WorkloadServer
                             "Supported engines are: apache, jetty, undertow, helidon."
                 )
             }
-            return Http4kWorkloadServer(server)
+            return Http4kWorkloadServer(server, config.initialProductCount)
         }
     }
 }

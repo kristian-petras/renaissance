@@ -93,6 +93,11 @@ import org.renaissance.ktor.KtorWorkloadServer
             "Supported engines for http4k are 'apache', 'jetty', 'undertow' and 'helidon'.\n" +
             "Supported engines for ktor are 'apache', 'jetty', 'tomcat' and 'cio'."
 )
+@Parameter(
+    name = "initial_product_count",
+    defaultValue = "1000",
+    summary = "Initial number of pre-generated products in the server."
+)
 @Configuration(
     name = "test",
     settings = [

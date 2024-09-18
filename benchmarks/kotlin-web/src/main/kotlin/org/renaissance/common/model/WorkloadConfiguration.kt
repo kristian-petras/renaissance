@@ -13,5 +13,6 @@ internal data class WorkloadConfiguration(
     val clientFramework: String,
     val clientEngine: String,
     val serverFramework: String,
-    val serverEngine: String
+    val serverEngine: String,
+    val initialProductCount: Int,
 )

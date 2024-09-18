@@ -19,10 +19,16 @@ import kotlinx.coroutines.runBlocking
 import org.renaissance.common.workload.WorkloadServer
 import org.renaissance.common.model.Product
 import org.renaissance.common.model.WorkloadConfiguration
+import org.renaissance.common.utility.Utility.generateProduct
 import java.util.concurrent.ConcurrentHashMap
 
-internal class KtorWorkloadServer(port: Int, serverEngine: String) : WorkloadServer {
-    private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>()
+internal class KtorWorkloadServer(port: Int, serverEngine: String, initialProductCount: Int) : WorkloadServer {
+    private val products: MutableMap<String, Product> = ConcurrentHashMap<String, Product>().apply {
+        repeat(initialProductCount) {
+            val product = generateProduct()
+            put(product.id, product)
+        }
+    }
 
     private val engine = when (serverEngine) {
         "netty" -> Netty
@@ -74,6 +80,6 @@ internal class KtorWorkloadServer(port: Int, serverEngine: String) : WorkloadSer
 
     companion object {
         fun create(config: WorkloadConfiguration): KtorWorkloadServer =
-            KtorWorkloadServer(config.port, config.serverEngine)
+            KtorWorkloadServer(config.port, config.serverEngine, config.initialProductCount)
     }
 }

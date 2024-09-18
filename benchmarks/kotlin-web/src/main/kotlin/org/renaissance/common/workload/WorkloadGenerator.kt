@@ -1,11 +1,15 @@
 package org.renaissance.common.workload
 
-import kotlinx.coroutines.*
-import org.renaissance.common.model.Product
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.renaissance.common.model.WorkloadConfiguration
 import org.renaissance.common.model.WorkloadSummary
 import org.renaissance.common.model.WorkloadType
-import java.util.*
+import org.renaissance.common.utility.Utility.generateProduct
+import java.util.Random
 import java.util.concurrent.atomic.AtomicLong
 
 /**
@@ -118,15 +122,6 @@ internal class WorkloadGenerator(
      * Helper function to generate a random workload type.
      */
     private fun Random.nextWorkload() = WorkloadType.entries[nextInt(WorkloadType.entries.size)]
-
-    /**
-     * Helper function to generate a new product with random id.
-     */
-    private fun generateProduct(): Product {
-        val id = UUID.randomUUID().toString()
-        val name = "Product $id"
-        return Product(id, name)
-    }
 
     private fun range(end: Int) = (1..end)
 }

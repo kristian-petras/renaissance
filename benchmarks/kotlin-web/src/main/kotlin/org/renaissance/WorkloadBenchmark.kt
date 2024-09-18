@@ -21,6 +21,9 @@ import org.renaissance.ktor.KtorWorkloadServer
 
 @Name("kotlin-web")
 @Group("kotlin")
+@Group("web")
+@Group("ktor")
+@Group("http4k")
 @Summary("Runs the web server and tests the throughput of the server by sending requests to the server.")
 @Licenses(License.APACHE2)
 @Repetitions(20)

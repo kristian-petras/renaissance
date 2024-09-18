@@ -365,10 +365,16 @@ lazy val kotlinWebBenchmarks = (project in file("benchmarks/kotlin-web"))
     libraryDependencies ++= Seq(
       "io.ktor" % "ktor-server-core-jvm" % "2.3.12",
       "io.ktor" % "ktor-server-netty-jvm" % "2.3.12",
+      "io.ktor" % "ktor-server-jetty-jvm" % "2.3.12",
+      "io.ktor" % "ktor-server-tomcat-jvm" % "2.3.12",
+      "io.ktor" % "ktor-server-cio-jvm" % "2.3.12",
       "io.ktor" % "ktor-server-content-negotiation-jvm" % "2.3.12",
       "io.ktor" % "ktor-client-core-jvm" % "2.3.12",
       "io.ktor" % "ktor-client-content-negotiation-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-apache-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-jetty-jvm" % "2.3.12",
       "io.ktor" % "ktor-client-okhttp-jvm" % "2.3.12",
+      "io.ktor" % "ktor-client-cio-jvm" % "2.3.12",
       "io.ktor" % "ktor-serialization-kotlinx-json-jvm" % "2.3.12",
       "org.http4k" % "http4k-core" % "5.31.0.0",
       "org.http4k" % "http4k-server-apache" % "5.31.0.0",
@@ -382,7 +388,7 @@ lazy val kotlinWebBenchmarks = (project in file("benchmarks/kotlin-web"))
       "org.http4k" % "http4k-format-moshi" % "5.31.0.0",
       "ch.qos.logback" % "logback-classic" % "1.5.8",
       "org.jetbrains.kotlinx" % "kotlinx-coroutines-core" % "1.9.0",
-      "org.jetbrains.kotlinx" % "kotlinx-serialization-json-jvm" % "1.7.2",
+      "org.jetbrains.kotlinx" % "kotlinx-serialization-json-jvm" % "1.7.2"
     )
   )
   .dependsOn(renaissanceCore % "provided")

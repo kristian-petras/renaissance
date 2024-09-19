@@ -39,7 +39,7 @@ for server_framework in "${frameworks[@]}"; do
                 echo "Running with server_framework=${server_framework}, server_engine=${server_engine}, client_framework=${client_framework}, client_engine=${client_engine}"
                 java -jar target/renaissance-gpl-0.17.0.jar \
                     --csv "$csv_output" \
-                    -o workload_count="50" \
+                    -o workload_count="200" \
                     -o server_framework="$server_framework" \
                     -o server_engine="$server_engine" \
                     -o client_framework="$client_framework" \
